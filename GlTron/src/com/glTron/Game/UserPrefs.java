@@ -57,6 +57,8 @@ public class UserPrefs {
 	private float mSpeed;
 	private int mPlayerColourIndex;
 	
+	private String IP;
+	
 	public UserPrefs(Context ctx)
 	{
 		mContext = ctx;
@@ -101,6 +103,7 @@ public class UserPrefs {
 		mSpeed = C_SPEED[speedIndex];
 		mPlayerColourIndex = Integer.valueOf(prefs.getString("playerBike","0"));
 		mDrawRecog = prefs.getBoolean("drawRecog", true);
+		IP = prefs.getString("ambilight", "192.168.1.2");
 	}
 	
 	public Camera.CamType CameraType()
@@ -117,6 +120,10 @@ public class UserPrefs {
 	public boolean PlaySFX()
 	{
 		return mSFX;
+	}
+	
+	public String getIP(){
+		return IP;
 	}
 	
 	public boolean DrawFPS()

@@ -27,6 +27,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 
 import com.glTron.R;
+import com.glTron.Ambilights.AmbilightEffect;
 import com.glTron.Game.GLTronGame;
 
 public class HUD {
@@ -150,10 +151,11 @@ public class HUD {
 	{
 		String str = null;
 		
-		if(dispWinner)
+		if(dispWinner){
 			str = "!! YOU WIN !!";
-		else if(dispLoser)
+		}else if(dispLoser){
 			str = " YOU LOSE ";
+		}
 			
 		if(str != null)
 		{
@@ -162,6 +164,7 @@ public class HUD {
 					Visual._vp_h / 2, 
 					(Visual._vp_w / (6 / 4 * str.length())), 
 					str);
+			
 		}
 		
 	}

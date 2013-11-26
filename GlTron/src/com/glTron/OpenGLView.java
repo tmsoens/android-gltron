@@ -25,6 +25,8 @@ package com.glTron;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 public class OpenGLView extends GLSurfaceView {
@@ -61,9 +63,17 @@ public class OpenGLView extends GLSurfaceView {
 			_x = event.getX();
 			_y = event.getY();
 			_renderer.onTouch(_x, _y);
-			
 		}
 		
 		return true;
+	}
+	
+	
+	public void keyPressed(int keyCode){
+		_renderer.onKey(keyCode);
+	}
+
+	public void keyPressed() {
+		_renderer.onOtherKey();
 	}
 }

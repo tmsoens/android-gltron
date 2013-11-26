@@ -22,14 +22,18 @@
 
 package com.glTron;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
+@SuppressLint("NewApi")
 public class glTron extends Activity {
     /** Called when the activity is first created. */
 	private OpenGLView _View;
@@ -96,6 +100,14 @@ public class glTron extends Activity {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
         	this.startActivity(new Intent(this, Preferences.class));
         }
-        return super.onKeyUp(keyCode, event);
+        else if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ) {
+        	_View.keyPressed(keyCode);
+        	Log.e("main", "DPAD keypressed");
+        }
+        else if((event.getSource() & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD)
+        	_View.keyPressed();
+        return true;
     }
+     
+     
 }

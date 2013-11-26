@@ -29,8 +29,10 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.KeyEvent;
 
 import com.glTron.R;
+import com.glTron.Ambilights.AmbilightEffect;
 import com.glTron.Game.Camera.CamType;
 import com.glTron.Sound.SoundManager;
 import com.glTron.Video.*;
@@ -143,7 +145,7 @@ public class GLTronGame {
 		
 		for(player = 0; player < mCurrentPlayers; player++)
 		{
-			Players[player] = new Player(player, mCurrentGridSize, LightBike, tronHUD);
+			Players[player] = new Player(player, mCurrentGridSize, LightBike, tronHUD,player==0,mPrefs);
 		}
 		
 		mRecognizer = new Recognizer(mCurrentGridSize);
@@ -224,6 +226,7 @@ public class GLTronGame {
 	
 	public void drawSplash(Context ctx, GL10 gl1)
 	{
+		AmbilightEffect.splash(mPrefs);
 		float verts[] = {
 			-1.0f, 1.0f, 0.0f,
 			1.0f,  1.0f, 0.0f,
@@ -366,7 +369,7 @@ public class GLTronGame {
 			
 			for(plyr = 0; plyr < mPrefs.NumberOfPlayers(); plyr++)
 			{
-				Players[plyr] = new Player(plyr, mCurrentGridSize, LightBike, tronHUD);
+				Players[plyr] = new Player(plyr, mCurrentGridSize, LightBike, tronHUD, plyr==0, mPrefs);
 				Players[plyr].setSpeed(mPrefs.Speed());
 			}
 			
@@ -588,11 +591,63 @@ public class GLTronGame {
 			else if(boOwnPlayerActive && !boOtherPlayersActive)
 			{
 				tronHUD.displayWin();
+				AmbilightEffect.winEffect(Players[OWN_PLAYER].getColor(),mPrefs);
 				Players[OWN_PLAYER].setSpeed(0.0f);
 			}
 		}
 
 		tronHUD.draw(Visual,TimeDt,Players[OWN_PLAYER].getScore());
+	}
+
+	public void addKeyEvent(int keyCode) {
+		if(Players[OWN_PLAYER].getSpeed() > 0.0f)
+		{
+			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
+			{
+				inputDirection = Players[OWN_PLAYER].TURN_LEFT;
+			}
+			else
+			{
+				inputDirection = Players[OWN_PLAYER].TURN_RIGHT;
+			}
+			boProcessInput = true;
+		}else{
+			if(boInitialState)
+			{
+				// Change the camera and start movement.
+				Cam = new Camera(Players[OWN_PLAYER], mPrefs.CameraType());
+				SoundManager.stopMusic();
+				
+				if(mPrefs.PlayMusic())
+					SoundManager.playMusic(true);
+				
+				if(mPrefs.PlaySFX() && mPrefs.DrawRecognizer())
+					SoundManager.playSoundLoop(RECOGNIZER_SOUND, 1.0f);
+				
+				tronHUD.displayInstr(false);
+				boInitialState = false;
+			}else
+				boProcessReset = true;
+		}
+	}
+
+	public void addRandomKey() {
+		if(boInitialState)
+		{
+			// Change the camera and start movement.
+			Cam = new Camera(Players[OWN_PLAYER], mPrefs.CameraType());
+			SoundManager.stopMusic();
+			
+			if(mPrefs.PlayMusic())
+				SoundManager.playMusic(true);
+			
+			if(mPrefs.PlaySFX() && mPrefs.DrawRecognizer())
+				SoundManager.playSoundLoop(RECOGNIZER_SOUND, 1.0f);
+			
+			tronHUD.displayInstr(false);
+			boInitialState = false;
+		}else
+			boProcessReset = true;
 	}
 	
 }

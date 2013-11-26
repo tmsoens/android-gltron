@@ -26,14 +26,16 @@ import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Color;
 import android.util.Log;
 
+import com.glTron.Ambilights.AmbilightEffect;
 import com.glTron.Sound.SoundManager;
 import com.glTron.Video.*;
 
 public class Player {
 
-
+	private boolean isHuman = false;
 	private Model Cycle;
 	private int Player_num;
 	private int Direction;
@@ -106,9 +108,12 @@ public class Player {
 			 {0.120f, 0.700f, 0.000f, 0.600f}, // Green
 			 {0.720f, 0.000f, 0.300f, 0.600f}  // Purple
 	};
+	
+	private final int colors[] = {Color.BLUE, Color.YELLOW, Color.RED, Color.GRAY, Color.GREEN, Color.CYAN};
 
 	private static boolean ColourTaken[] = {false,false,false,false,false,false};
 	private int mPlayerColourIndex;
+	private int mColor;
 	
 //	private final int MAX_LOD_LEVEL = 3;
 	private final int LOD_DIST[][] = {
@@ -118,10 +123,14 @@ public class Player {
 			{10,30,150}
 	};
 	
-	public Player(int player_number, float gridSize, Model mesh, HUD hud)
+	private UserPrefs mPrefs;
+	
+	public Player(int player_number, float gridSize, Model mesh, HUD hud, boolean isHuman, UserPrefs mPrefs)
 	{
 		int colour = 0;
 		boolean done = false;
+		this.isHuman = isHuman;
+		this.mPrefs = mPrefs;
 		
 		Random rand = new Random();
 		Direction = rand.nextInt(3); // accepts values 0..3;
@@ -170,6 +179,7 @@ public class Player {
 			    colour++;
 			}
 		}
+		mColor = colors[mPlayerColourIndex];
 		
 	}
 	
@@ -209,7 +219,7 @@ public class Player {
 			Trails[trailOffset].vDirection.v[0] += t * DIRS_X[Direction];
 			Trails[trailOffset].vDirection.v[1] += t * DIRS_Y[Direction];
 			
-			doCrashTestWalls(walls);
+			doCrashTestWalls(walls, plyers);
 			doCrashTestPlayer(plyers);
 			
 		}
@@ -272,7 +282,7 @@ public class Player {
 
 	}
 	
-	public void doCrashTestWalls(Segment Walls[])
+	public void doCrashTestWalls(Segment Walls[], Player[] plyers)
 	{
 		Segment Current = Trails[trailOffset];
 		Vec V;
@@ -299,6 +309,19 @@ public class Player {
 					
 					if(GLTronGame.mPrefs.PlaySFX())
 						SoundManager.playSound(GLTronGame.CRASH_SOUND, 1.0f);
+				
+					if(!isHuman){					
+						boolean alldead = true;
+						for(int i = 1; i < plyers.length; ++i){
+							if(plyers[i].getSpeed() >= 0.0f)
+								alldead = false;
+						}
+						if(alldead)
+							AmbilightEffect.winEffect(plyers[0].getColor(), mPrefs);
+						else
+							AmbilightEffect.crash(plyers[j].getColor(), mColor, mPrefs);
+					}else
+						AmbilightEffect.loseEffect(mColor, mPrefs);
 					
 					Log.e("GLTRON", "Wall CRASH");
 					break;
@@ -350,14 +373,33 @@ public class Player {
 						
 						if(GLTronGame.mPrefs.PlaySFX())
 							SoundManager.playSound(GLTronGame.CRASH_SOUND, 1.0f);
-						
-						Log.e("GLTRON", "Wall CRASH");
+						if(k==0 || isHuman)
+							AmbilightEffect.loseEffect(players[0].mColor, mPrefs);
+						else{
+							boolean alldead = true;
+							for(int i = 1; i < players.length; ++i){
+								if(players[i].getSpeed() >= 0.0f)
+									alldead = false;
+							}
+							
+							if(alldead)
+								AmbilightEffect.winEffect(players[0].getColor(), mPrefs);
+							else
+								AmbilightEffect.crash(players[j].getColor(), mColor, mPrefs);
+							
+						}
+						Log.e("GLTRON", "Player CRASH");
 						break;
 					}
 				}
 			}
 		}
 	}
+
+	public int getColor() {
+		return mColor;
+	}
+
 
 	private void doCycleRotation(GL10 gl, long CurrentTime)
 	{

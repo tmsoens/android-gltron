@@ -108,5 +108,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		
 	}
 
+	public void onKey(int keyCode) {
+		Game.addKeyEvent(keyCode);		
+	}
+
+	public void onOtherKey() {
+		Game.addRandomKey();		
+	}
+
 	
 }

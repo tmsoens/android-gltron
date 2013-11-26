@@ -32,6 +32,17 @@
 		
 			    
 	</PreferenceCategory>
+	
+	
+	<PreferenceCategory
+		android:title="Ambilights Options"
+		android:key="fifth_category">
+		<EditTextPreference 
+		    android:title="Ambilight"
+            android:key="ambilight"
+            android:summary="Set the ip address of your TV" 
+            android:defaultValue="192.168.1.2"/>
+	</PreferenceCategory>
     
     
     <PreferenceCategory
