@@ -132,6 +132,7 @@ public class GLTronGame {
 	    
 		//Load preferences
 	    mPrefs = new UserPrefs(mContext);
+	    AmbilightEffect.splash(mPrefs);
 	    mCurrentPlayers = mPrefs.NumberOfPlayers();
 	    mCurrentGridSize = mPrefs.GridSize();
 	    
@@ -226,7 +227,7 @@ public class GLTronGame {
 	
 	public void drawSplash(Context ctx, GL10 gl1)
 	{
-		AmbilightEffect.splash(mPrefs);
+		
 		float verts[] = {
 			-1.0f, 1.0f, 0.0f,
 			1.0f,  1.0f, 0.0f,

@@ -84,11 +84,11 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	@Override
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		Log.e("GLTRON", "Renderer: Surface changed");
+		Log.d("GLTRON", "Renderer: Surface changed");
 		sb=null;
 		sb = new StringBuffer(40);
 		Debug = sb.append("Screen size = ").append(w).append(",").append(h).toString();
-		Log.e("GLTRON", Debug);
+		Log.d("GLTRON", Debug);
 		Game.updateScreenSize(w, h);
 	}
 	

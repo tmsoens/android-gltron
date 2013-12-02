@@ -377,7 +377,7 @@ public class Player {
 							AmbilightEffect.loseEffect(players[0].mColor, mPrefs);
 						else{
 							boolean alldead = true;
-							for(int i = 1; i < players.length; ++i){
+							for(int i = 1; i < mPrefs.NumberOfPlayers(); ++i){
 								if(players[i].getSpeed() >= 0.0f)
 									alldead = false;
 							}
